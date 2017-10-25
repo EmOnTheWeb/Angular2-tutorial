@@ -7,9 +7,12 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'my-heroes',
   template: `<ul class="heroes">
-              <li [class.selected]="hero === selectedHero" *ngFor="let hero of heroes"
-              (click)="onSelect(hero)">
-                <span class="badge">{{hero.id}}</span> {{hero.name}}
+              <li *ngFor="let hero of heroes" (click)="onSelect(hero)"
+    [class.selected]="hero === selectedHero">
+                  <span class="badge">{{hero.id}}</span>
+                  <span>{{hero.name}}</span>
+                  <button class="delete"
+                    (click)="delete(hero); $event.stopPropagation()">x</button>
               </li>
             </ul>
             <div>
@@ -25,6 +28,13 @@ import { Router } from '@angular/router';
               <button (click)="gotoDetail()">View Details</button>
             </div>`,
     styles: [`
+        button.delete {
+          float:right;
+          margin-top: 2px;
+          margin-right: .8em;
+          background-color: gray !important;
+          color:white;
+        }
         .selected {
             background-color: #CFD8DC !important;
             color: white;
@@ -101,5 +111,13 @@ export class HeroesComponent implements OnInit {
                 this.heroes.push(hero);
                 this.selectedHero = null;
         });
+    }
+    delete(hero: Hero): void {
+          this.heroService
+              .delete(hero.id)
+              .then(() => {
+                this.heroes = this.heroes.filter(h => h !== hero);
+                if (this.selectedHero === hero) { this.selectedHero = null; }
+              });
     }
 }

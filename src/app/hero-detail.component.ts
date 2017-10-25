@@ -32,4 +32,12 @@ export class HeroDetailComponent implements OnInit{
       this.heroService.update(this.hero)
         .then(() => this.goBack());
     }
+    delete(hero: Hero): void {
+      this.heroService
+          .delete(hero.id)
+          .then(() => {
+            this.heroes = this.heroes.filter(h => h !== hero);
+            if (this.selectedHero === hero) { this.selectedHero = null; }
+          });
+    }
 }
